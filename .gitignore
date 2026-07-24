@@ -4,3 +4,4 @@ venv/
 .env
 MinGW/SQL2022/
 *.msi
+MinGW/
