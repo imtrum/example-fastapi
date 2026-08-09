@@ -2,6 +2,7 @@ from fastapi import FastAPI,Response, status,HTTPException, Depends, APIRouter
 from .. import models, schemas, utils
 from sqlalchemy.orm import Session
 from ..database import get_db  
+from sqlalchemy.exc import IntegrityError
 
 router = APIRouter(
     prefix = "/users",
@@ -12,16 +13,22 @@ router = APIRouter(
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
     hashed_password = utils.hash(user.password)
-    
+
     user_data = user.model_dump()
     user_data.pop("password")
-    
-    # 3. Explicitly pass the hashed string to your SQLAlchemy model
+
     new_user = models.User(**user_data, password=hashed_password)
-    
-    db.add(new_user)
-    db.commit()
-    db.refresh(new_user)
+
+    try:
+        db.add(new_user)
+        db.commit()
+        db.refresh(new_user)
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="A user with this email already exists."
+        )
 
     return new_user
 

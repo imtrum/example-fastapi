@@ -2,7 +2,7 @@
 from re import I
 from typing import Optional
 
-from pydantic import BaseModel, EmailStr, conint
+from pydantic import BaseModel, EmailStr, conint,ConfigDict
 from datetime import datetime
 
 
@@ -22,8 +22,8 @@ class UserOut(BaseModel):
     id: int
     email: EmailStr
     create_at: datetime
-    class Config:
-        from_attributes = True
+    
+    model_config = ConfigDict(from_attributes=True)
 
 class Post(PostBase):
     id: int
@@ -31,14 +31,12 @@ class Post(PostBase):
     owner_id: int
     owner: UserOut
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)
 class PostOut(BaseModel):
     Post: Post
     votes: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class UserCreate(BaseModel):
     email: EmailStr

@@ -1,6 +1,6 @@
 
 
-from fastapi import FastAPI
+from fastapi import FastAPI,status
 from . import models
 from .database import engine
 from .routers import user, post, auth,vote
@@ -26,9 +26,9 @@ app.include_router(auth.router)
 app.include_router(vote.router)
 
 
-@app.get("/")
-def root():
-    return {"message": "Hello World!!!!!!!!!!!!"}
+@app.get("/",status_code = status.HTTP_201_CREATED)
+def root(): 
+    return {"message": "bind mout works 123"}
 
 
 
