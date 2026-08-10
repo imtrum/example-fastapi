@@ -6,6 +6,8 @@ jobs:
   job1:
     environment:
       name: testing
+    
+    runs-on: ubuntu_latest
 
     env:
       DATABASE_HOSTNAME: ${{ secrets.DATABASE_HOSTNAME }}
@@ -30,7 +32,7 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-  runs-on: ubuntu_latest
+  
   steps:
     - name: pulling git repo
       uses: actions/checkout@v2
